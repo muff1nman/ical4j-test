@@ -10,7 +10,9 @@ import java.util.Calendar;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.ValidationException;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.Location;
@@ -33,6 +35,11 @@ public class App  {
 	public static final String STORE_STATE = "CO";
 	public static final String STORE_ZIP = "10298";
 	public static final String STORE_DELIM = ", ";
+	
+	public static final int APP_DAY = 15;
+	public static final int APP_HOUR = 17;
+	public static final int APP_MINUTE = 45;
+	public static final int APP_MONTH = java.util.Calendar.AUGUST;
 	
     public static void main( String[] args ) {
         System.out.println( "Hello World!" );
@@ -101,6 +108,8 @@ public class App  {
     	appointment.getProperties().add(generateUID());
     	appointment.getProperties().add(new Description(notes()));
     	appointment.getProperties().add(new Location(createAddress()));
+    	appointment.getAlarms().add(alarm(new Dur(0,-1,0,0)));
+    	appointment.getAlarms().add(alarm(new Dur(-1,0,0,0)));
     	return appointment;
     }
     
@@ -120,10 +129,10 @@ public class App  {
     public static java.util.Date eventStartDateTime() {
     	// TODO check args for timezome?
     	java.util.Calendar calendar = java.util.Calendar.getInstance();
-    	calendar.set(java.util.Calendar.DAY_OF_MONTH, 16);
-    	calendar.set(java.util.Calendar.MONTH, java.util.Calendar.AUGUST);
-    	calendar.set(java.util.Calendar.HOUR_OF_DAY, 14);
-    	calendar.set(java.util.Calendar.MINUTE, 5);
+    	calendar.set(java.util.Calendar.DAY_OF_MONTH, APP_DAY);
+    	calendar.set(java.util.Calendar.MONTH, APP_MONTH);
+    	calendar.set(java.util.Calendar.HOUR_OF_DAY, APP_HOUR);
+    	calendar.set(java.util.Calendar.MINUTE, APP_MINUTE);
     	System.out.println(calendar);
     	System.out.println(dateForFilename(calendar));
     	System.out.println(dateForFilename(calendar.getTime()));
@@ -132,6 +141,13 @@ public class App  {
     
     public static Dur duration() {
     	return new Dur(0,1,0,0);
+    }
+    
+    public static VAlarm alarm(Dur dur) {
+    	VAlarm reminder = new VAlarm(dur);
+    	reminder.getProperties().add(Action.DISPLAY);
+    	reminder.getProperties().add(new Description("Your appointment with Pep Boys is coming close!"));
+    	return reminder;
     }
     
 //    public static VVenue createAddress() {
