@@ -12,6 +12,8 @@ import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
@@ -24,6 +26,14 @@ import net.fortuna.ical4j.util.UidGenerator;
 public class App  {
 	public static final boolean VALIDATE = true;
 	public static final boolean WRITE_TO_FILE = true;
+	
+	public static final String STORE_NAME = "Pep Boys Nowhere Store";
+	public static final String STORE_STREET_ADDRESS = "123 Nowhere St";
+	public static final String STORE_CITY = "St. Elmo";
+	public static final String STORE_STATE = "CO";
+	public static final String STORE_ZIP = "10298";
+	public static final String STORE_DELIM = ", ";
+	
     public static void main( String[] args ) {
         System.out.println( "Hello World!" );
         
@@ -87,8 +97,10 @@ public class App  {
     public static VEvent createEvent() {
     	net.fortuna.ical4j.model.DateTime start = new net.fortuna.ical4j.model.DateTime(eventStartDateTime());
     	System.out.println(dateForFilename(start));
-    	VEvent appointment = new VEvent(start, duration(), description());
+    	VEvent appointment = new VEvent(start, duration(), summary());
     	appointment.getProperties().add(generateUID());
+    	appointment.getProperties().add(new Description(notes()));
+    	appointment.getProperties().add(new Location(createAddress()));
     	return appointment;
     }
     
@@ -97,8 +109,12 @@ public class App  {
     	return g.generateUid();
     }
     
-    public static String description() {
+    public static String summary() {
     	return "Your appointment at Provider!";
+    }
+    
+    public static String notes() {
+    	return "here in lies the notes section ofthis calader event.  notice i have very bad spleeing but am just trying to get a long string going here";
     }
     
     public static java.util.Date eventStartDateTime() {
@@ -118,5 +134,22 @@ public class App  {
     	return new Dur(0,1,0,0);
     }
     
+//    public static VVenue createAddress() {
+//    	PropertyList address = new PropertyList();
+//    	address.add(new Name("Pep Boys Nowhere Store"));
+//    	address.add(new StreetAddress("1234 Nowhere St."));
+//    	address.add(new Country("US"));
+//    	address.add(new Postalcode("12301"));
+//    	return new VVenue();
+//    }
+    
+    public static String createAddress() {
+//    	return STORE_NAME + "\n" + STORE_STREET_ADDRESS + "\n" + STORE_CITY + ", " + STORE_STATE + "  " + STORE_ZIP;
+    	return STORE_STREET_ADDRESS + STORE_DELIM  + STORE_CITY + STORE_DELIM  + STORE_STATE + STORE_DELIM  + STORE_ZIP; 
+
+    }
+    
+    
+
     
 }
